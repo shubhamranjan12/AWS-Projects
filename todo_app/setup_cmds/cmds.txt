@@ -1,0 +1,21 @@
+# Commands to setup the demo app
+
+sudo yum update -y
+sudo yum install git -y
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.9 get-pip.py
+pip3.9 install flask
+git clone https://github.com/shubhamranjan12/AWS-Projects.git
+cd AWS-Projects/todo_app
+python3.9 main.py &
+
+
+
+
+
+# NFS Setup
+
+sudo yum install -y amazon-efs-utils
+sudo mkdir /mnt/efs
+sudo mount -t efs -o tls fs-0f9be047da42621fc:/ /mnt/efs
+sudo chown ec2-user:ec2-user /mnt/efs

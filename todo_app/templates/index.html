@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Todo App</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px;
+            background: #ff9900;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        li {
+            margin: 10px;
+            list-style: none;
+        }
+
+        .delete {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+<h1>AWS Flask Todo App</h1>
+
+<input type="text" id="taskInput" placeholder="Enter a task">
+<button onclick="addTask()">Add</button>
+
+<ul id="todoList"></ul>
+
+<script>
+
+async function loadTodos() {
+    const res = await fetch('/todos');
+    const todos = await res.json();
+
+    const list = document.getElementById("todoList");
+    list.innerHTML = "";
+
+    todos.forEach(todo => {
+        const li = document.createElement("li");
+        li.innerHTML = `${todo.task}
+        <button class="delete" onclick="deleteTask(${todo.id})">Delete</button>
+        <button class="update" onclick="updateTask(${todo.id})">Update</button>`;
+        list.appendChild(li);
+    });
+}
+
+async function addTask() {
+
+    const task = document.getElementById("taskInput").value;
+
+    await fetch('/todos', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ task })
+    });
+
+    document.getElementById("taskInput").value = "";
+    loadTodos();
+}
+
+async function updateTask(id) {
+
+    const task = document.getElementById("taskInput").value;
+
+    await fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ task })
+    });
+
+    document.getElementById("taskInput").value = "";
+    loadTodos();
+}
+
+async function deleteTask(id) {
+
+    await fetch(`/todos/${id}`, {
+        method: "DELETE"
+    });
+
+    loadTodos();
+}
+
+loadTodos();
+
+</script>
+
+</body>
+</html>
